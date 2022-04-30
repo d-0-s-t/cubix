@@ -3,7 +3,7 @@
 This package lets you create and interact with a n1 x n2 x n3 arrangement of cubes in threejs. The layers in the arrangement can be turned to specific set of moves or alternatively they can be scrambled. User moves are recorded. Solutions are not available yet. As a lazy hack, the inverse of user moves would work.
 
 A demo of this is hosted here:
-[d0st.me/app/cubes](d0st.me/app/cubes)
+[d0st.me/app/cubes](https://d0st.me/app/cubes)
 
 # Installation 
 If you are using node, install with
