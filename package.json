@@ -10,10 +10,17 @@
 		"rubiks",
 		"n1xn2xn3",
 		"three",
-		"three.js"
+		"three.js", 
+		"nxnxn",
+		"puzzle"
 	],
+	"homepage": "d0st.me/app/cubes",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/d-0-s-t/three-cube.git"
+	},
 	"scripts": {
-		"build": "parcel build && tsc --project jsconfig.json"
+		"build": "parcel build"
 	},
 	"eslintConfig": {
 		"extends": [

@@ -12,7 +12,7 @@ If you are using node, install with
 npm intall three-cube
 ```
 
-If not, just import the module [src/index.js](github.com/d-0-s-t/three-cube/src/index.js). (If you are not using a bundler, take note to fix the imports)
+If not, just import the module [src/index.js](https://github.com/d-0-s-t/three-cube/blob/master/src/three-cube.js). (If you are not using a bundler, take note to fix the imports)
 
 # Usage
 
