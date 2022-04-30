@@ -1,6 +1,6 @@
 {
 	"name": "three-cube",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"source": "src/three-cube.js",
 	"main": "dist/three-cube.js",
 	"module": "dist/three-cube.module.js",
@@ -10,7 +10,7 @@
 		"rubiks",
 		"n1xn2xn3",
 		"three",
-		"three.js", 
+		"three.js",
 		"nxnxn",
 		"puzzle"
 	],
