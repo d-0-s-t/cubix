@@ -1,0 +1,92 @@
+{
+	"name": "three-cube",
+	"version": "0.1.0",
+	"source": "src/three-cube.js",
+	"main": "dist/three-cube.js",
+	"module": "dist/three-cube.module.js",
+	"description": "Create an interactive n1xn2xn3 cube with threejs.",
+	"keywords": [
+		"cube",
+		"rubiks",
+		"n1xn2xn3",
+		"three",
+		"three.js"
+	],
+	"scripts": {
+		"build": "parcel build && tsc --project jsconfig.json"
+	},
+	"eslintConfig": {
+		"extends": [
+			"eslint:recommended",
+			"plugin:jsdoc/recommended"
+		],
+		"parserOptions": {
+			"ecmaVersion": 6,
+			"sourceType": "module"
+		},
+		"env": {
+			"es6": true,
+			"browser": true
+		},
+		"rules": {
+			"no-var": "error",
+			"indent": [
+				"error",
+				"tab",
+				{
+					"SwitchCase": 1
+				}
+			],
+			"linebreak-style": [
+				"error",
+				"unix"
+			],
+			"quotes": [
+				"error",
+				"double"
+			],
+			"semi": [
+				"error",
+				"never"
+			],
+			"jsdoc/multiline-blocks": [
+				"error",
+				{
+					"noZeroLineText": false,
+					"noFinalLineText": false
+				}
+			],
+			"jsdoc/require-param-description": 0,
+			"jsdoc/require-returns-description": 0,
+			"jsdoc/newline-after-description": 0,
+			"jsdoc/require-property-description": 0,
+			"jsdoc/require-jsdoc": [
+				"error",
+				{
+					"exemptEmptyFunctions": true,
+					"require": {
+						"ArrowFunctionExpression": false,
+						"FunctionExpression": true,
+						"MethodDefinition": true
+					}
+				}
+			]
+		},
+		"settings": {
+			"jsdoc": {
+				"mode": "typescript"
+			}
+		},
+		"plugins": [
+			"jsdoc"
+		]
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"eslint": "^8.14.0",
+		"parcel": "^2.5.0"
+	},
+	"dependencies": {
+		"three": "^0.139.2"
+	}
+}
