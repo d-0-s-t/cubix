@@ -185,7 +185,7 @@ export class THREECube {
 			}
 
 			function onDocumentMouseUp() {
-				if (_this.state === STATES.TURNING_CUBE){
+				if (_this.state === STATES.TURNING_CUBE) {
 					interactEnd()
 					commitTurn()
 				}
@@ -412,22 +412,24 @@ export class THREECube {
 		const halfGridMultiplier = this.cubeSize * SPACING_FACTOR / 2
 
 		/**
+		 * @param {boolean} dontAdd
 		 * @returns {boolean}
 		 */
-		function completion() {
+		function finishSingleMove(dontAdd) {
 			if (turnComplete) {
-				_this.turns.push(moves[currentIndex])
+				if (!dontAdd)
+					_this.turns.push(moves[currentIndex])
 				currentIndex++
-				if (currentIndex === moves.length) {
+				if (currentIndex >= moves.length) {
 					return true
 				} else {
-					startStep(currentIndex)
+					startMove(currentIndex)
 					return false
 				}
 			}
 		}
 
-		function finishTurn() {
+		function finishMoves() {
 			_this.cubes.forEach(cube => {
 				cube.position.sub(_this.position)
 				cube.position.x = Math.round((cube.position.x) / halfGridMultiplier) * halfGridMultiplier
@@ -442,11 +444,21 @@ export class THREECube {
 		/**
 		 * @param {number} index 
 		 */
-		function startStep(index) {
+		function startMove(index) {
 			rotationAxis.set(0, 0, 0)
 			const layerAxis = /** @type {"x"|"y"|"z"} */ (moves[index][0])
+			if (AXES.indexOf(layerAxis) === -1) {
+				console.warn("Not a move! Skipping..")
+				finishSingleMove(true)
+				return
+			}
 			rotationAxis[layerAxis] = 1
 			const layerIndex = parseInt(moves[index].substring(1))
+			if (isNaN(layerIndex) || (layerIndex >= _this.layout[layerAxis] || layerIndex < 0)) {
+				console.warn("Incorrect layer selected! Skipping..")
+				finishSingleMove(true)
+				return
+			}
 			rotationDirection = (moves[index][moves[index].length - 1] == "'" ? 1 : -1)
 			cubesToRotate.length = 0
 			cubesToRotate.push(..._this.getCubesInLayer(layerAxis, layerIndex))
@@ -473,13 +485,13 @@ export class THREECube {
 				angleToRotate -= totalRotated - endRotation
 			}
 			cubesToRotate.forEach(cube => rotateAroundWorldAxis(cube, rotationAxis, angleToRotate * rotationDirection, _this.position))
-			if (!completion()) {
+			if (!finishSingleMove()) {
 				window.requestAnimationFrame(turnStep)
 			} else {
-				finishTurn()
+				finishMoves()
 			}
 		}
-		startStep(currentIndex)
+		startMove(currentIndex)
 		turnStep(0)
 	}
 

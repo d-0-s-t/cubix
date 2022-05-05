@@ -73,7 +73,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         const camera = options.camera;
         const scene = this.scene;
         const interactStart = options.onInteractStart || (()=>{
-            //this because we have no control over eventhandling of trackball controls
+            //this because we have no control over event handling of trackball controls
             canvas.dispatchEvent(new PointerEvent("pointerup"));
         });
         const interactEnd = options.onInteractEnd || (()=>{});
@@ -357,19 +357,20 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         const _this = this;
         const halfGridMultiplier = this.cubeSize * $f89055a617ae15ea$var$SPACING_FACTOR / 2;
         /**
+		 * @param {boolean} dontAdd
 		 * @returns {boolean}
-		 */ function completion() {
+		 */ function finishSingleMove(dontAdd) {
             if (turnComplete) {
-                _this.turns.push(moves[currentIndex]);
+                if (!dontAdd) _this.turns.push(moves[currentIndex]);
                 currentIndex++;
-                if (currentIndex === moves.length) return true;
+                if (currentIndex >= moves.length) return true;
                 else {
-                    startStep(currentIndex);
+                    startMove(currentIndex);
                     return false;
                 }
             }
         }
-        function finishTurn() {
+        function finishMoves() {
             _this.cubes.forEach((cube)=>{
                 cube.position.sub(_this.position);
                 cube.position.x = Math.round(cube.position.x / halfGridMultiplier) * halfGridMultiplier;
@@ -382,11 +383,21 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         }
         /**
 		 * @param {number} index 
-		 */ function startStep(index) {
+		 */ function startMove(index) {
             rotationAxis.set(0, 0, 0);
             const layerAxis = moves[index][0];
+            if ($f89055a617ae15ea$var$AXES.indexOf(layerAxis) === -1) {
+                console.warn("Not a move! Skipping..");
+                finishSingleMove(true);
+                return;
+            }
             rotationAxis[layerAxis] = 1;
             const layerIndex = parseInt(moves[index].substring(1));
+            if (isNaN(layerIndex) || layerIndex >= _this.layout[layerAxis] || layerIndex < 0) {
+                console.warn("Incorrect layer selected! Skipping..");
+                finishSingleMove(true);
+                return;
+            }
             rotationDirection = moves[index][moves[index].length - 1] == "'" ? 1 : -1;
             cubesToRotate.length = 0;
             cubesToRotate.push(..._this.getCubesInLayer(layerAxis, layerIndex));
@@ -411,10 +422,10 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
             }
             cubesToRotate.forEach((cube)=>$f89055a617ae15ea$var$rotateAroundWorldAxis(cube, rotationAxis, angleToRotate * rotationDirection, _this.position)
             );
-            if (!completion()) window.requestAnimationFrame(turnStep);
-            else finishTurn();
+            if (!finishSingleMove()) window.requestAnimationFrame(turnStep);
+            else finishMoves();
         }
-        startStep(currentIndex);
+        startMove(currentIndex);
         turnStep(0);
     }
     /**
