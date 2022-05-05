@@ -97,7 +97,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         function setBindings() {
             /**
 			 * @param {MouseEvent} event 
-			 */ function onRubixCanvasMouseDown(event) {
+			 */ function onCanvasMouseDown(event) {
                 if (_this.state == $f89055a617ae15ea$var$STATES.AUTO_TURNING_CUBE) return;
                 _this.state = $f89055a617ae15ea$var$STATES.IDLE;
                 if (snapDelta) return;
@@ -128,7 +128,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
             }
             /**
 			 * @param {MouseEvent} event 
-			 */ function onRubixCanvasMouseMove(event) {
+			 */ function onCanvasMouseMove(event) {
                 //event.preventDefault()
                 if (snapDelta) return;
                 mousePoint.x = event.pageX;
@@ -225,12 +225,12 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
                 }
                 totalRotated = 0;
             }
-            canvas.addEventListener("pointerdown", onRubixCanvasMouseDown);
-            document.addEventListener("pointermove", onRubixCanvasMouseMove);
+            canvas.addEventListener("pointerdown", onCanvasMouseDown);
+            document.addEventListener("pointermove", onCanvasMouseMove);
             document.addEventListener("pointerup", onDocumentMouseUp);
             _this.unbindHandlers = function() {
-                canvas.removeEventListener("pointerdown", onRubixCanvasMouseDown);
-                document.removeEventListener("pointermove", onRubixCanvasMouseMove);
+                canvas.removeEventListener("pointerdown", onCanvasMouseDown);
+                document.removeEventListener("pointermove", onCanvasMouseMove);
                 document.removeEventListener("pointerup", onDocumentMouseUp);
             };
         }
@@ -357,7 +357,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         const _this = this;
         const halfGridMultiplier = this.cubeSize * $f89055a617ae15ea$var$SPACING_FACTOR / 2;
         /**
-		 * @param {boolean} dontAdd
+		 * @param {boolean} [dontAdd]
 		 * @returns {boolean}
 		 */ function finishSingleMove(dontAdd) {
             if (turnComplete) {

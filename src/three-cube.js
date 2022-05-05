@@ -95,7 +95,7 @@ export class THREECube {
 			/**
 			 * @param {MouseEvent} event 
 			 */
-			function onRubixCanvasMouseDown(event) {
+			function onCanvasMouseDown(event) {
 				if (_this.state == STATES.AUTO_TURNING_CUBE)
 					return
 
@@ -136,7 +136,7 @@ export class THREECube {
 			/**
 			 * @param {MouseEvent} event 
 			 */
-			function onRubixCanvasMouseMove(event) {
+			function onCanvasMouseMove(event) {
 				//event.preventDefault()
 				if (snapDelta)
 					return
@@ -264,13 +264,13 @@ export class THREECube {
 				totalRotated = 0
 			}
 
-			canvas.addEventListener("pointerdown", onRubixCanvasMouseDown)
-			document.addEventListener("pointermove", onRubixCanvasMouseMove)
+			canvas.addEventListener("pointerdown", onCanvasMouseDown)
+			document.addEventListener("pointermove", onCanvasMouseMove)
 			document.addEventListener("pointerup", onDocumentMouseUp)
 
 			_this.unbindHandlers = function() {
-				canvas.removeEventListener("pointerdown", onRubixCanvasMouseDown)
-				document.removeEventListener("pointermove", onRubixCanvasMouseMove)
+				canvas.removeEventListener("pointerdown", onCanvasMouseDown)
+				document.removeEventListener("pointermove", onCanvasMouseMove)
 				document.removeEventListener("pointerup", onDocumentMouseUp)
 			}
 		}
@@ -412,7 +412,7 @@ export class THREECube {
 		const halfGridMultiplier = this.cubeSize * SPACING_FACTOR / 2
 
 		/**
-		 * @param {boolean} dontAdd
+		 * @param {boolean} [dontAdd]
 		 * @returns {boolean}
 		 */
 		function finishSingleMove(dontAdd) {
