@@ -69,6 +69,18 @@ declare module "three-cube" {
         cubeSize: number;
         position?: THREE.Vector3;
         /**
+         * By default when mouse pointer starts
+         * to rotate the cube, a pointerup event is dispatched on renderig element to prevent
+         * any Control from rotating camera. This behaviour can be overridden by passing a
+         * custom function which may do nothing if needed.
+         */
+        onInteractStart?: () => void;
+        /**
+         * Optional callback when user has finished
+         * interacting with the cube.
+         */
+        onInteractEnd?: () => void;
+        /**
          * hex color array of length 6
          */
         colors?: string[];

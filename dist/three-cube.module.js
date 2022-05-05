@@ -22,6 +22,12 @@ const $b3a17304de622ace$var$SPACING_FACTOR = 1.1;
  * @property {number} z
  * @property {number} cubeSize
  * @property {THREE.Vector3} [position]
+ * @property {()=>void} [onInteractStart] By default when mouse pointer starts 
+ * to rotate the cube, a pointerup event is dispatched on renderig element to prevent 
+ * any Control from rotating camera. This behaviour can be overridden by passing a 
+ * custom function which may do nothing if needed.
+ * @property {()=>void} [onInteractEnd] Optional callback when user has finished 
+ * interacting with the cube.
  * @property {string[]} [colors] hex color array of length 6
  */ const $b3a17304de622ace$var$AXES = [
     "x",
@@ -61,7 +67,11 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
         const canvas = options.canvas;
         const camera = options.camera;
         const scene = this.scene;
-        //const controls = options.controls
+        const interactStart = options.onInteractStart || (()=>{
+            //this because we have no control over eventhandling of trackball controls
+            canvas.dispatchEvent(new PointerEvent("pointerup"));
+        });
+        const interactEnd = options.onInteractEnd || (()=>{});
         const cubeSize = options.cubeSize;
         const gridMultiplier = cubeSize * $b3a17304de622ace$var$SPACING_FACTOR;
         const _this = this;
@@ -96,11 +106,9 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                     const foundCube = _this.cubes.find((cube)=>cube == intersectionObject.object
                     );
                     if (foundCube) {
-                        //this because we have no control over eventhandling of trackball controls
-                        canvas.dispatchEvent(new PointerEvent("pointerup"));
+                        interactStart();
                         _this.state = $b3a17304de622ace$var$STATES.TURNING_CUBE;
                         referenceCube = intersectionObject.object;
-                        //controls.enabled = false
                         worldNormal.copy(intersectionObject.face.normal);
                         worldNormal.transformDirection(referenceCube.matrixWorld);
                         previous3DPoint.copy(intersectionObject.point);
@@ -152,7 +160,10 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                 }
             }
             function onDocumentMouseUp() {
-                if (_this.state === $b3a17304de622ace$var$STATES.TURNING_CUBE) commitTurn();
+                if (_this.state === $b3a17304de622ace$var$STATES.TURNING_CUBE) {
+                    interactEnd();
+                    commitTurn();
+                }
                 if (_this.state !== $b3a17304de622ace$var$STATES.AUTO_TURNING_CUBE) _this.state = $b3a17304de622ace$var$STATES.IDLE;
                 directionCheck = false;
             //controls.enabled = true
