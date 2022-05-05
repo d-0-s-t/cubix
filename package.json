@@ -5,6 +5,7 @@
 	"main": "dist/three-cube.js",
 	"module": "dist/three-cube.module.js",
 	"description": "Create an interactive n1xn2xn3 cube with threejs.",
+	"author": "d0st",
 	"keywords": [
 		"cube",
 		"rubiks",
@@ -14,13 +15,13 @@
 		"nxnxn",
 		"puzzle"
 	],
-	"homepage": "d0st.me/app/cubes",
+	"homepage": "https://www.d0st.me/app/cubes",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/d-0-s-t/three-cube.git"
 	},
 	"scripts": {
-		"build": "parcel build"
+		"build": "parcel build && tsc --project jsconfig.json"
 	},
 	"eslintConfig": {
 		"extends": [

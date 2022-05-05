@@ -63,3 +63,13 @@ currentPuzzle.destroy()
 THREECube.SingmasterToCubeNotation(["R", "U", "B", "L2"])
 THREECube.SingmasterToCubeNotation("R U B L2")
 ```
+
+# Development
+
+Uses parcel to create commonjs and module js files. After working with the source files, create assets for package consumption using:
+
+```
+npm run build 
+```
+
+This will generate the js files inside [dist](https://github.com/d-0-s-t/three-cube/blob/master/dist) directory with type files (yes from js).
