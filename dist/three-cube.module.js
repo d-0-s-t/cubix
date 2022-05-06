@@ -28,7 +28,9 @@ const $b3a17304de622ace$var$SPACING_FACTOR = 1.1;
  * custom function which may do nothing if needed.
  * @property {()=>void} [onInteractEnd] Optional callback when user has finished 
  * interacting with the cube.
- * @property {string[]} [colors] hex color array of length 6
+ * @property {string[]} [colors] Optional hex color array of length 6
+ * @property {number} [turnTime] Optional time taken to make one move in milliseconds. default is 200ms
+ * @property {number} [snapTime] Optional time taken to snap in milliseconds. default is 200ms
  */ const $b3a17304de622ace$var$AXES = [
     "x",
     "y",
@@ -89,6 +91,10 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
         if (options.colors instanceof Array && options.colors.length == 6) colorArray = options.colors;
         this.position = new $j2zab$Vector3(0, 0, 0);
         if (options.position instanceof $j2zab$Vector3) this.position = options.position;
+        this.turnTime = $b3a17304de622ace$var$SNAPPING_TIME;
+        this.snapTime = $b3a17304de622ace$var$SNAPPING_TIME;
+        if (typeof options.turnTime == "number") this.turnTime = Math.max(options.turnTime, 200);
+        if (typeof options.snapTime == "number" && options.snapTime > 75) this.snapTime = Math.max(options.snapTime, 100);
         function setBindings() {
             /**
 			 * @param {MouseEvent} event 
@@ -272,7 +278,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
 		 * @param {number} timeStamp 
 		 */ function snap(timeStamp) {
             if (snapDelta) {
-                let delta = snapDelta * ((timeStamp - previousTime) / $b3a17304de622ace$var$SNAPPING_TIME);
+                let delta = snapDelta * ((timeStamp - previousTime) / _this.snapTime);
                 if (snapDelta < 0) delta = Math.max(snapDelta - totalRotated, delta);
                 else delta = Math.min(snapDelta - totalRotated, delta);
                 rotatingCubes.forEach((c)=>$b3a17304de622ace$var$rotateAroundWorldAxis(c, rotationAxis, delta, _this.position)
@@ -408,7 +414,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
 		 * @param {number} timeStamp 
 		 */ function turnStep(timeStamp) {
             if (previousTime == 0) previousTime = timeStamp;
-            let angleToRotate = Math.PI / 2 * ((timeStamp - previousTime) / $b3a17304de622ace$var$SNAPPING_TIME);
+            let angleToRotate = Math.PI / 2 * ((timeStamp - previousTime) / _this.turnTime);
             previousTime = timeStamp;
             totalRotated += angleToRotate;
             if (totalRotated >= endRotation) {

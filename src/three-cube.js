@@ -21,7 +21,9 @@ const SPACING_FACTOR = 1.1
  * custom function which may do nothing if needed.
  * @property {()=>void} [onInteractEnd] Optional callback when user has finished 
  * interacting with the cube.
- * @property {string[]} [colors] hex color array of length 6
+ * @property {string[]} [colors] Optional hex color array of length 6
+ * @property {number} [turnTime] Optional time taken to make one move in milliseconds. default is 200ms
+ * @property {number} [snapTime] Optional time taken to snap in milliseconds. default is 200ms
  */
 
 const AXES = /** @type {Array<"x"|"y"|"z">} */ (["x", "y", "z"])
@@ -90,6 +92,13 @@ export class THREECube {
 		this.position = new THREE.Vector3(0, 0, 0)
 		if (options.position instanceof THREE.Vector3)
 			this.position = options.position
+
+		this.turnTime = SNAPPING_TIME
+		this.snapTime = SNAPPING_TIME
+		if(typeof options.turnTime == "number")
+			this.turnTime = Math.max(options.turnTime, 200)
+		if(typeof options.snapTime == "number" && options.snapTime > 75)
+			this.snapTime = Math.max(options.snapTime, 100)
 
 		function setBindings() {
 			/**
@@ -322,7 +331,7 @@ export class THREECube {
 		 */
 		function snap(timeStamp) {
 			if (snapDelta) {
-				let delta = snapDelta * ((timeStamp - previousTime) / SNAPPING_TIME)
+				let delta = snapDelta * ((timeStamp - previousTime) / _this.snapTime)
 				if (snapDelta < 0)
 					delta = Math.max(snapDelta - totalRotated, delta)
 				else
@@ -477,7 +486,7 @@ export class THREECube {
 		function turnStep(timeStamp) {
 			if (previousTime == 0)
 				previousTime = timeStamp
-			let angleToRotate = (Math.PI / 2) * ((timeStamp - previousTime) / (SNAPPING_TIME))
+			let angleToRotate = (Math.PI / 2) * ((timeStamp - previousTime) / _this.turnTime)
 			previousTime = timeStamp
 			totalRotated += angleToRotate
 			if (totalRotated >= endRotation) {

@@ -26,6 +26,8 @@ declare module "three-cube" {
         state: number;
         unbindHandlers: () => void;
         position: THREE.Vector3;
+        turnTime: number;
+        snapTime: number;
         /**
          * Removes all cubes from scene. Unbinds handlers.
          */
@@ -81,9 +83,17 @@ declare module "three-cube" {
          */
         onInteractEnd?: () => void;
         /**
-         * hex color array of length 6
+         * Optional hex color array of length 6
          */
         colors?: string[];
+        /**
+         * Optional time taken to make one move in milliseconds. default is 200ms
+         */
+        turnTime?: number;
+        /**
+         * Optional time taken to snap in milliseconds. default is 200ms
+         */
+        snapTime?: number;
     };
     import * as THREE from "three";
 }

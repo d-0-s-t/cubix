@@ -29,6 +29,7 @@ currentPuzzle = new THREECube({
 		canvas: canvas // rendering canvas
 })
 ```
+Other config options like colors, snap time, turn time, etc are available as optional parameters. Check type files for more information.
 
 When rotated around an axis containing equal number of cubes in both directions, the arrangement is rotated in steps of 90 degrees. If that is not the case the arrangement is rotated in steps of 180 degrees.
 
