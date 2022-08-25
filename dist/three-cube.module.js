@@ -22,11 +22,11 @@ const $b3a17304de622ace$var$SPACING_FACTOR = 1.1;
  * @property {number} z
  * @property {number} cubeSize
  * @property {THREE.Vector3} [position]
- * @property {()=>void} [onInteractStart] By default when mouse pointer starts 
+ * @property {(event?:PointerEvent)=>void} [onInteractStart] By default when mouse pointer starts 
  * to rotate the cube, a pointerup event is dispatched on renderig element to prevent 
  * any Control from rotating camera. This behaviour can be overridden by passing a 
  * custom function which may do nothing if needed.
- * @property {()=>void} [onInteractEnd] Optional callback when user has finished 
+ * @property {(event?:PointerEvent)=>void} [onInteractEnd] Optional callback when user has finished 
  * interacting with the cube.
  * @property {string[]} [colors] Optional hex color array of length 6
  * @property {number} [turnTime] Optional time taken to make one move in milliseconds. default is 200ms
@@ -69,9 +69,9 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
         const canvas = options.canvas;
         const camera = options.camera;
         const scene = this.scene;
-        const interactStart = options.onInteractStart || (()=>{
+        const interactStart = options.onInteractStart || ((event)=>{
             //this because we have no control over event handling of trackball controls
-            canvas.dispatchEvent(new PointerEvent("pointerup"));
+            canvas.dispatchEvent(new PointerEvent("pointerup", event));
         });
         const interactEnd = options.onInteractEnd || (()=>{});
         const cubeSize = options.cubeSize;
@@ -109,10 +109,9 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                 raycaster.setFromCamera(vector2, camera);
                 const intersectionObject = raycaster.intersectObjects(scene.children)[0];
                 if (intersectionObject) {
-                    const foundCube = _this.cubes.find((cube)=>cube == intersectionObject.object
-                    );
+                    const foundCube = _this.cubes.find((cube)=>cube == intersectionObject.object);
                     if (foundCube) {
-                        interactStart();
+                        interactStart(event);
                         _this.state = $b3a17304de622ace$var$STATES.TURNING_CUBE;
                         referenceCube = intersectionObject.object;
                         worldNormal.copy(intersectionObject.face.normal);
@@ -155,19 +154,21 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                             directionCheck = true;
                         }
                     } else {
-                        const x = mousePoint.x - previousMousePoint.x;
-                        const y = mousePoint.y - previousMousePoint.y;
-                        const rotationAngle = (x * directionVector.x + y * directionVector.y) / 100;
+                        const x1 = mousePoint.x - previousMousePoint.x;
+                        const y1 = mousePoint.y - previousMousePoint.y;
+                        const rotationAngle = (x1 * directionVector.x + y1 * directionVector.y) / 100;
                         totalRotated += rotationAngle;
-                        rotatingCubes.forEach((c)=>$b3a17304de622ace$var$rotateAroundWorldAxis(c, rotationAxis, rotationAngle, _this.position)
-                        );
+                        rotatingCubes.forEach((c)=>$b3a17304de622ace$var$rotateAroundWorldAxis(c, rotationAxis, rotationAngle, _this.position));
                     }
                     previousMousePoint.copy(mousePoint);
                 }
             }
-            function onDocumentMouseUp() {
+            /**
+			 * 
+			 * @param {PointerEvent} event 
+			 */ function onDocumentMouseUp(event) {
                 if (_this.state === $b3a17304de622ace$var$STATES.TURNING_CUBE) {
-                    interactEnd();
+                    interactEnd(event);
                     commitTurn();
                 }
                 if (_this.state !== $b3a17304de622ace$var$STATES.AUTO_TURNING_CUBE) _this.state = $b3a17304de622ace$var$STATES.IDLE;
@@ -186,8 +187,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                 currentLayer = axis + index;
                 const layerCubes = _this.getCubesInLayer(axis, index);
                 rotatingCubes.push(...layerCubes);
-                const otherAxis = $b3a17304de622ace$var$AXES.find((oAxis)=>oAxis != axis && oAxis != fixedNormal
-                );
+                const otherAxis = $b3a17304de622ace$var$AXES.find((oAxis)=>oAxis != axis && oAxis != fixedNormal);
                 let increment = worldNormal[fixedNormal] > 0 ? 2 : -2;
                 if (fixedNormal == "z" && axis == "x" || fixedNormal == "x" && axis == "y" || fixedNormal == "y" && axis == "z") increment = -increment;
                 previous3DPoint[otherAxis] += increment;
@@ -206,8 +206,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                 totalRotated = Math.abs(totalRotated);
                 let slot = Math.floor(totalRotated / (Math.PI / 2)) * direction;
                 if (totalRotated % (Math.PI / 2) > Math.PI / 4) slot += 1 * direction;
-                const otherAxes = $b3a17304de622ace$var$AXES.filter((axis)=>!rotationAxis[axis]
-                );
+                const otherAxes = $b3a17304de622ace$var$AXES.filter((axis)=>!rotationAxis[axis]);
                 const nonSymmetricRotation = options[otherAxes[0]] != options[otherAxes[1]];
                 if (nonSymmetricRotation && direction * slot % 2 == 1) slot += 1 * direction;
                 slot %= 4;
@@ -258,8 +257,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                         const materials = [];
                         faceColors.forEach((color)=>materials.push(new $j2zab$MeshPhongMaterial({
                                 color: color
-                            }))
-                        );
+                            })));
                         const cube = new $j2zab$Mesh(geometry, materials);
                         cube.name = `CUBE_${id}_${indexedPosition}`;
                         cube.position.x = _this.position.x + xPos * gridMultiplier;
@@ -281,8 +279,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                 let delta = snapDelta * ((timeStamp - previousTime) / _this.snapTime);
                 if (snapDelta < 0) delta = Math.max(snapDelta - totalRotated, delta);
                 else delta = Math.min(snapDelta - totalRotated, delta);
-                rotatingCubes.forEach((c)=>$b3a17304de622ace$var$rotateAroundWorldAxis(c, rotationAxis, delta, _this.position)
-                );
+                rotatingCubes.forEach((c)=>$b3a17304de622ace$var$rotateAroundWorldAxis(c, rotationAxis, delta, _this.position));
                 totalRotated += delta;
                 if (Math.abs(totalRotated - snapDelta) < 0.0001) {
                     totalRotated = 0;
@@ -312,8 +309,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
     /**
 	 * Removes all cubes from scene. Unbinds handlers.
 	 */ destroy() {
-        this.cubes.forEach((cube)=>this.scene.remove(cube)
-        );
+        this.cubes.forEach((cube)=>this.scene.remove(cube));
         this.unbindHandlers();
     }
     /**
@@ -404,8 +400,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
             cubesToRotate.push(..._this.getCubesInLayer(layerAxis, layerIndex));
             turnComplete = false;
             totalRotated = 0;
-            const otherAxes = $b3a17304de622ace$var$AXES.filter((axis)=>!rotationAxis[axis]
-            );
+            const otherAxes = $b3a17304de622ace$var$AXES.filter((axis)=>!rotationAxis[axis]);
             const nonSymmetricRotation = _this.layout[otherAxes[0]] != _this.layout[otherAxes[1]];
             endRotation = Math.PI / 2;
             if (nonSymmetricRotation) endRotation = Math.PI;
@@ -421,8 +416,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
                 turnComplete = true;
                 angleToRotate -= totalRotated - endRotation;
             }
-            cubesToRotate.forEach((cube)=>$b3a17304de622ace$var$rotateAroundWorldAxis(cube, rotationAxis, angleToRotate * rotationDirection, _this.position)
-            );
+            cubesToRotate.forEach((cube)=>$b3a17304de622ace$var$rotateAroundWorldAxis(cube, rotationAxis, angleToRotate * rotationDirection, _this.position));
             if (!finishSingleMove()) window.requestAnimationFrame(turnStep);
             else finishMoves();
         }
@@ -437,8 +431,7 @@ class $b3a17304de622ace$export$13ed178991fcb7fc {
 	 */ getCubesInLayer(axis, index) {
         let startPos = (this.layout[axis] - 1) / 2;
         const position = (startPos - index) * this.cubeSize * $b3a17304de622ace$var$SPACING_FACTOR + this.position[axis];
-        return this.cubes.filter((cube)=>Math.abs(cube.position[axis] - position) < 0.0000001
-        );
+        return this.cubes.filter((cube)=>Math.abs(cube.position[axis] - position) < 0.0000001);
     }
     /**
 	 * This applies only for a 3x3x3 arrangement.

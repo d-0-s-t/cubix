@@ -76,12 +76,12 @@ declare module "three-cube" {
          * any Control from rotating camera. This behaviour can be overridden by passing a
          * custom function which may do nothing if needed.
          */
-        onInteractStart?: () => void;
+        onInteractStart?: (event?: PointerEvent) => void;
         /**
          * Optional callback when user has finished
          * interacting with the cube.
          */
-        onInteractEnd?: () => void;
+        onInteractEnd?: (event?: PointerEvent) => void;
         /**
          * Optional hex color array of length 6
          */

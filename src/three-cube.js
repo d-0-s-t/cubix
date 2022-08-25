@@ -15,11 +15,11 @@ const SPACING_FACTOR = 1.1
  * @property {number} z
  * @property {number} cubeSize
  * @property {THREE.Vector3} [position]
- * @property {()=>void} [onInteractStart] By default when mouse pointer starts 
+ * @property {(event?:PointerEvent)=>void} [onInteractStart] By default when mouse pointer starts 
  * to rotate the cube, a pointerup event is dispatched on renderig element to prevent 
  * any Control from rotating camera. This behaviour can be overridden by passing a 
  * custom function which may do nothing if needed.
- * @property {()=>void} [onInteractEnd] Optional callback when user has finished 
+ * @property {(event?:PointerEvent)=>void} [onInteractEnd] Optional callback when user has finished 
  * interacting with the cube.
  * @property {string[]} [colors] Optional hex color array of length 6
  * @property {number} [turnTime] Optional time taken to make one move in milliseconds. default is 200ms
@@ -66,9 +66,9 @@ export class THREECube {
 		const canvas = options.canvas
 		const camera = options.camera
 		const scene = this.scene
-		const interactStart = options.onInteractStart || (() => {
+		const interactStart = options.onInteractStart || ((event) => {
 			//this because we have no control over event handling of trackball controls
-			canvas.dispatchEvent(new PointerEvent("pointerup"))
+			canvas.dispatchEvent(new PointerEvent("pointerup", event))
 		})
 		const interactEnd = options.onInteractEnd || (() => {})
 		const cubeSize = options.cubeSize
@@ -122,7 +122,7 @@ export class THREECube {
 				if (intersectionObject) {
 					const foundCube = _this.cubes.find(cube => cube == intersectionObject.object)
 					if (foundCube) {
-						interactStart()
+						interactStart(event)
 						_this.state = STATES.TURNING_CUBE
 						referenceCube = intersectionObject.object
 						worldNormal.copy(intersectionObject.face.normal)
@@ -193,9 +193,13 @@ export class THREECube {
 				}
 			}
 
-			function onDocumentMouseUp() {
+			/**
+			 * 
+			 * @param {PointerEvent} event 
+			 */
+			function onDocumentMouseUp(event) {
 				if (_this.state === STATES.TURNING_CUBE) {
-					interactEnd()
+					interactEnd(event)
 					commitTurn()
 				}
 				if (_this.state !== STATES.AUTO_TURNING_CUBE)

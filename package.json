@@ -1,6 +1,6 @@
 {
 	"name": "three-cube",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"source": "src/three-cube.js",
 	"main": "dist/three-cube.js",
 	"module": "dist/three-cube.module.js",
@@ -91,11 +91,11 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"eslint": "^8.14.0",
-		"eslint-plugin-jsdoc": "^39.2.9",
-		"parcel": "^2.5.0"
+		"eslint": "^8.22.0",
+		"eslint-plugin-jsdoc": "^39.3.6",
+		"parcel": "^2.7.0"
 	},
 	"dependencies": {
-		"three": "^0.139.2"
+		"three": "^0.143.0"
 	}
 }

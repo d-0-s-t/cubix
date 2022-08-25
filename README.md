@@ -73,4 +73,4 @@ Uses parcel to create commonjs and module js files. After working with the sourc
 npm run build 
 ```
 
-This will generate the js files inside [dist](https://github.com/d-0-s-t/three-cube/blob/master/dist) directory with type files (yes from js).
+This will generate the js files inside [dist](https://github.com/d-0-s-t/three-cube/blob/master/dist) directory with type files (yes from js). Building requires typescript installed globally.
