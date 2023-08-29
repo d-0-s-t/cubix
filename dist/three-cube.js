@@ -36,7 +36,7 @@ const $f89055a617ae15ea$var$SPACING_FACTOR = 1.1;
  * @property {string[]} [colors] Optional hex color array of length 6
  * @property {number} [turnTime] Optional time taken to make one move in milliseconds. default is 200ms
  * @property {number} [snapTime] Optional time taken to snap in milliseconds. default is 200ms
- */ const $f89055a617ae15ea$var$AXES = [
+ */ const $f89055a617ae15ea$var$AXES = /** @type {Array<"x"|"y"|"z">} */ [
     "x",
     "y",
     "z"
@@ -56,17 +56,17 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
 	 */ constructor(options){
         this.scene = options.scene;
         this.cubeSize = options.cubeSize;
-        this.cubes = [];
+        this.cubes = /** @type {THREE.Object3D[]} */ [];
         this.layout = {
             x: options.x || 1,
             y: options.y || 1,
             z: options.z || 1
         };
-        this.turns = [];
+        this.turns = /** @type {string[]} */ [];
         this.state = $f89055a617ae15ea$var$STATES.IDLE;
         const rotationAxis = new $cVcZv$three.Vector3(1, 1, 1);
         /** @type {THREE.Object3D} */ let referenceCube;
-        const rotatingCubes = [];
+        const rotatingCubes = /** @type {THREE.Object3D[]} */ [];
         let directionCheck = false;
         let totalRotated = 0;
         let snapDelta = 0;
@@ -102,7 +102,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         if (typeof options.snapTime == "number" && options.snapTime > 75) this.snapTime = Math.max(options.snapTime, 100);
         function setBindings() {
             /**
-			 * @param {MouseEvent} event 
+			 * @param {PointerEvent} event 
 			 */ function onCanvasMouseDown(event) {
                 if (_this.state == $f89055a617ae15ea$var$STATES.AUTO_TURNING_CUBE) return;
                 _this.state = $f89055a617ae15ea$var$STATES.IDLE;
@@ -132,7 +132,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
                 startMousePoint.copy(mousePoint);
             }
             /**
-			 * @param {MouseEvent} event 
+			 * @param {PointerEvent} event 
 			 */ function onCanvasMouseMove(event) {
                 //event.preventDefault()
                 if (snapDelta) return;
@@ -159,9 +159,9 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
                             directionCheck = true;
                         }
                     } else {
-                        const x1 = mousePoint.x - previousMousePoint.x;
-                        const y1 = mousePoint.y - previousMousePoint.y;
-                        const rotationAngle = (x1 * directionVector.x + y1 * directionVector.y) / 100;
+                        const x = mousePoint.x - previousMousePoint.x;
+                        const y = mousePoint.y - previousMousePoint.y;
+                        const rotationAngle = (x * directionVector.x + y * directionVector.y) / 100;
                         totalRotated += rotationAngle;
                         rotatingCubes.forEach((c)=>$f89055a617ae15ea$var$rotateAroundWorldAxis(c, rotationAxis, rotationAngle, _this.position));
                     }
@@ -256,10 +256,10 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
                             y == 0 ? colorArray[5] : noColor,
                             y + 1 == options.y ? colorArray[4] : noColor,
                             z == 0 ? colorArray[2] : noColor,
-                            z + 1 == options.z ? colorArray[0] : noColor, 
+                            z + 1 == options.z ? colorArray[0] : noColor
                         ];
                         const geometry = new $cVcZv$three.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                        const materials = [];
+                        const materials = /** @type {THREE.MeshPhongMaterial[]} */ [];
                         faceColors.forEach((color)=>materials.push(new $cVcZv$three.MeshPhongMaterial({
                                 color: color
                             })));
@@ -323,7 +323,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
 	 * @param {number} count
 	 * @param {()=> void} [callback]
 	 */ scramble(count, callback) {
-        const directions = [];
+        const directions = /** @type {string[]} */ [];
         for(let i = 0; i < count; i++){
             const axis = $f89055a617ae15ea$var$AXES[Math.floor(Math.random() * 3)];
             const layer = Math.floor(Math.random() * this.layout[axis]);
@@ -352,7 +352,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
         let previousTime = 0;
         let totalRotated = 0;
         let endRotation = Math.PI / 2;
-        const cubesToRotate = [];
+        const cubesToRotate = /** @type {THREE.Object3D[]} */ [];
         const rotationAxis = new $cVcZv$three.Vector3();
         let rotationDirection = -1;
         this.state = $f89055a617ae15ea$var$STATES.AUTO_TURNING_CUBE;
@@ -362,14 +362,13 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
 		 * @param {boolean} [dontAdd]
 		 * @returns {boolean}
 		 */ function finishSingleMove(dontAdd) {
-            if (turnComplete) {
-                if (!dontAdd) _this.turns.push(moves[currentIndex]);
-                currentIndex++;
-                if (currentIndex >= moves.length) return true;
-                else {
-                    startMove(currentIndex);
-                    return false;
-                }
+            if (!turnComplete) return false;
+            if (!dontAdd) _this.turns.push(moves[currentIndex]);
+            currentIndex++;
+            if (currentIndex >= moves.length) return true;
+            else {
+                startMove(currentIndex);
+                return false;
             }
         }
         function finishMoves() {
@@ -387,7 +386,7 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
 		 * @param {number} index 
 		 */ function startMove(index) {
             rotationAxis.set(0, 0, 0);
-            const layerAxis = moves[index][0];
+            const layerAxis = /** @type {"x"|"y"|"z"} */ moves[index][0];
             if ($f89055a617ae15ea$var$AXES.indexOf(layerAxis) === -1) {
                 console.warn("Not a move! Skipping..");
                 finishSingleMove(true);
@@ -443,10 +442,8 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
 	 * @param {Array<string>|string} turns 
 	 * @returns {Array<string>}
 	 */ static SingmasterToCubeNotation(turns) {
-        let arrayTurns;
-        if (typeof turns == "string") arrayTurns = turns.split(" ");
-        else arrayTurns = turns;
-        const cubeNotation = [];
+        let arrayTurns = typeof turns == "string" ? turns.split(" ") : turns;
+        const cubeNotation = /** @type {string[]} */ [];
         const map = {
             "R": "x0",
             "L": "x2'",
@@ -455,13 +452,20 @@ class $f89055a617ae15ea$export$13ed178991fcb7fc {
             "F": "z0",
             "B": "z2'"
         };
-        arrayTurns.forEach((turn)=>{
-            let cubeTurn = map[turn[0]];
-            if (turn[turn.length - 1] === "'") cubeTurn += "'";
-            cubeTurn = cubeTurn.replace("''", "");
-            cubeNotation.push(cubeTurn);
-            if (turn[turn.length - 1] === "2") cubeNotation.push(cubeTurn);
-        });
+        try {
+            for(let i = 0; i < arrayTurns.length; i++){
+                const turn = arrayTurns[i];
+                const singTurn = /** @type {"R"|"L"|"U"|"D"|"F"|"B"} */ turn[0].toUpperCase();
+                let cubeTurn = map[singTurn];
+                if (!cubeTurn) throw new Error("Not a valid Singmaster notation.");
+                if (turn[turn.length - 1] === "'") cubeTurn += "'";
+                cubeTurn = cubeTurn.replace("''", "");
+                cubeNotation.push(cubeTurn);
+                if (turn[turn.length - 1] === "2") cubeNotation.push(cubeTurn);
+            }
+        } catch (e) {
+            console.error(e);
+        }
         return cubeNotation;
     }
     /**

@@ -10,7 +10,13 @@
 		"emitDeclarationOnly": true,
 		"noImplicitAny": true,
 		"esModuleInterop": true,
-		"outFile": "dist/three-cube.d.ts"
+		"outFile": "dist/three-cube.d.ts",
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"types": [
+			"three"
+		]
 	},
 	"include": [
 		"src/three-cube.js"

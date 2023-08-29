@@ -1,6 +1,6 @@
 {
 	"name": "three-cube",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"source": "src/three-cube.js",
 	"main": "dist/three-cube.js",
 	"module": "dist/three-cube.module.js",
@@ -18,7 +18,7 @@
 	"homepage": "https://www.d0st.me/app/cubes",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/d-0-s-t/three-cube.git"
+		"url": "git+https://github.com/d-0-s-t/three-cube.git"
 	},
 	"scripts": {
 		"build": "parcel build && tsc --project jsconfig.json"
@@ -91,11 +91,12 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"eslint": "^8.22.0",
-		"eslint-plugin-jsdoc": "^39.3.6",
-		"parcel": "^2.7.0"
+		"@types/three": "^0.155.1",
+		"eslint": "^8.48.0",
+		"eslint-plugin-jsdoc": "^46.5.0",
+		"parcel": "^2.9.3"
 	},
 	"dependencies": {
-		"three": "^0.143.0"
+		"three": "^0.155.0"
 	}
 }

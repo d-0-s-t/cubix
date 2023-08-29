@@ -95,14 +95,14 @@ export class THREECube {
 
 		this.turnTime = SNAPPING_TIME
 		this.snapTime = SNAPPING_TIME
-		if(typeof options.turnTime == "number")
+		if (typeof options.turnTime == "number")
 			this.turnTime = Math.max(options.turnTime, 200)
-		if(typeof options.snapTime == "number" && options.snapTime > 75)
+		if (typeof options.snapTime == "number" && options.snapTime > 75)
 			this.snapTime = Math.max(options.snapTime, 100)
 
 		function setBindings() {
 			/**
-			 * @param {MouseEvent} event 
+			 * @param {PointerEvent} event 
 			 */
 			function onCanvasMouseDown(event) {
 				if (_this.state == STATES.AUTO_TURNING_CUBE)
@@ -143,7 +143,7 @@ export class THREECube {
 			}
 
 			/**
-			 * @param {MouseEvent} event 
+			 * @param {PointerEvent} event 
 			 */
 			function onCanvasMouseMove(event) {
 				//event.preventDefault()
@@ -429,16 +429,18 @@ export class THREECube {
 		 * @returns {boolean}
 		 */
 		function finishSingleMove(dontAdd) {
-			if (turnComplete) {
-				if (!dontAdd)
-					_this.turns.push(moves[currentIndex])
-				currentIndex++
-				if (currentIndex >= moves.length) {
-					return true
-				} else {
-					startMove(currentIndex)
-					return false
-				}
+			if (!turnComplete)
+				return false
+
+			if (!dontAdd)
+				_this.turns.push(moves[currentIndex])
+
+			currentIndex++
+			if (currentIndex >= moves.length) {
+				return true
+			} else {
+				startMove(currentIndex)
+				return false
 			}
 		}
 
@@ -526,12 +528,7 @@ export class THREECube {
 	 * @returns {Array<string>}
 	 */
 	static SingmasterToCubeNotation(turns) {
-		let arrayTurns
-		if (typeof turns == "string")
-			arrayTurns = turns.split(" ")
-		else
-			arrayTurns = turns
-
+		let arrayTurns = (typeof turns == "string") ? turns.split(" ") : turns
 		const cubeNotation = /** @type {string[]} */ ([])
 		const map = {
 			"R": "x0",
@@ -541,16 +538,28 @@ export class THREECube {
 			"F": "z0",
 			"B": "z2'"
 		}
-		arrayTurns.forEach(turn => {
-			let cubeTurn = map[turn[0]]
-			if (turn[turn.length - 1] === "'") {
-				cubeTurn += "'"
-			}
-			cubeTurn = cubeTurn.replace("''", "")
-			cubeNotation.push(cubeTurn)
-			if (turn[turn.length - 1] === "2")
+
+		try {
+			for (let i = 0; i < arrayTurns.length; i++) {
+				const turn = arrayTurns[i]
+				const singTurn = /** @type {"R"|"L"|"U"|"D"|"F"|"B"} */
+					(turn[0].toUpperCase())
+				let cubeTurn = map[singTurn]
+				if (!cubeTurn)
+					throw new Error("Not a valid Singmaster notation.")
+
+				if (turn[turn.length - 1] === "'")
+					cubeTurn += "'"
+
+				cubeTurn = cubeTurn.replace("''", "")
+
 				cubeNotation.push(cubeTurn)
-		})
+				if (turn[turn.length - 1] === "2")
+					cubeNotation.push(cubeTurn)
+			}
+		} catch (e) {
+			console.error(e)
+		}
 
 		return cubeNotation
 	}

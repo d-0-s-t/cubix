@@ -16,7 +16,7 @@ declare module "three-cube" {
         constructor(options: CubeOptions);
         scene: THREE.Scene;
         cubeSize: number;
-        cubes: THREE.Object3D[];
+        cubes: THREE.Object3D<THREE.Event>[];
         layout: {
             x: number;
             y: number;
